@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1634" height="963" viewBox="0 0 1634 963">
+  <rect width="1634" height="963" fill="#f5f7f4"/>
+  <rect x="286" y="25" width="1180" height="334" fill="#fff" stroke="#d7ddd6"/>
+  <text x="305" y="58" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#66736b">User ID</text>
+  <rect x="305" y="68" width="360" height="42" fill="#fbfcfb" stroke="#d7ddd6"/>
+  <text x="318" y="95" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#17201a">demo</text>
+  <text x="305" y="139" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#66736b">Question</text>
+  <rect x="305" y="150" width="1141" height="135" fill="#fbfcfb" stroke="#d7ddd6"/>
+  <text x="318" y="181" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#17201a">Luật Phòng, chống ma túy quy định những hành vi nào bị nghiêm cấm?</text>
+  <line x1="318" y1="184" x2="792" y2="184" stroke="#c92828" stroke-width="2" stroke-dasharray="4 3"/>
+  <rect x="1253" y="301" width="92" height="40" fill="#1f6f5b"/>
+  <text x="1285" y="327" font-family="Arial, sans-serif" font-size="15" font-weight="800" fill="#fff">Ask</text>
+  <rect x="1355" y="301" width="92" height="40" fill="#fff" stroke="#1f6f5b"/>
+  <text x="1382" y="327" font-family="Arial, sans-serif" font-size="15" font-weight="800" fill="#164c3f">Clear</text>
+
+  <rect x="286" y="378" width="775" height="560" fill="#fff" stroke="#d7ddd6"/>
+  <rect x="286" y="378" width="775" height="52" fill="#fff" stroke="#d7ddd6"/>
+  <text x="303" y="412" font-family="Arial, sans-serif" font-size="16" font-weight="800" fill="#000">Answer</text>
+  <text x="847" y="411" font-family="Arial, sans-serif" font-size="13" fill="#66736b">gemini-3.5-flash · agent-b02888ca</text>
+
+  <text x="303" y="465" font-family="Arial, sans-serif" font-size="15" fill="#111">Theo Điều 5 Luật Phòng, chống ma túy 2021, các hành vi bị nghiêm cấm gồm:</text>
+  <text x="303" y="512" font-family="Arial, sans-serif" font-size="15" fill="#111">- 1. Trồng cây có chứa chất ma túy, hướng dẫn trồng cây có chứa chất ma túy.</text>
+  <text x="303" y="539" font-family="Arial, sans-serif" font-size="15" fill="#111">- 2. Nghiên cứu, giám định, kiểm nghiệm, kiểm định, sản xuất, tàng trữ, vận chuyển,</text>
+  <text x="303" y="562" font-family="Arial, sans-serif" font-size="15" fill="#111">  bảo quản, tồn trữ, mua bán, phân phối, xử lý, trao đổi, xuất khẩu, nhập khẩu...</text>
+  <text x="303" y="608" font-family="Arial, sans-serif" font-size="15" fill="#111">- 3. Chiếm đoạt chất ma túy, tiền chất, thuốc gây nghiện, thuốc hướng thần...</text>
+  <text x="303" y="654" font-family="Arial, sans-serif" font-size="15" fill="#111">- 4. Giao nhận, quản lý, kiểm soát, lưu giữ, cấp phát, bảo quản chất ma túy...</text>
+  <text x="303" y="700" font-family="Arial, sans-serif" font-size="15" fill="#111">- 5. Sử dụng, tổ chức sử dụng trái phép chất ma túy; cưỡng bức, lôi kéo người khác...</text>
+  <text x="303" y="746" font-family="Arial, sans-serif" font-size="15" fill="#111">- 6. Sản xuất, tàng trữ, vận chuyển, mua bán phương tiện, dụng cụ dùng vào việc...</text>
+  <text x="303" y="792" font-family="Arial, sans-serif" font-size="15" fill="#111">- 7. Chống lại hoặc cản trở việc xét nghiệm chất ma túy trong cơ thể...</text>
+  <text x="303" y="838" font-family="Arial, sans-serif" font-size="15" fill="#111">- 8. Trả thù hoặc cản trở người thực thi nhiệm vụ phòng, chống ma túy...</text>
+  <text x="303" y="939" font-family="Arial, sans-serif" font-size="15" fill="#111">Nội dung này là thông tin tham khảo, không thay thế tư vấn pháp lý chính thức. [73_2021_QH14_445185.md, 2021]</text>
+
+  <rect x="1080" y="378" width="386" height="360" fill="#fff" stroke="#d7ddd6"/>
+  <rect x="1080" y="378" width="386" height="52" fill="#fff" stroke="#d7ddd6"/>
+  <text x="1096" y="412" font-family="Arial, sans-serif" font-size="16" font-weight="800" fill="#000">Sources</text>
+  <text x="1434" y="411" font-family="Arial, sans-serif" font-size="13" fill="#66736b">1</text>
+  <rect x="1092" y="443" width="360" height="169" fill="#fbfcfb" stroke="#d7ddd6"/>
+  <text x="1105" y="471" font-family="Arial, sans-serif" font-size="14" font-weight="800" fill="#000">73_2021_QH14_445185.md</text>
+  <text x="1105" y="493" font-family="Arial, sans-serif" font-size="12" fill="#66736b">legal/73_2021_QH14_445185.md · score 1</text>
+  <text x="1105" y="521" font-family="Arial, sans-serif" font-size="13" fill="#334038">Điều 5. Các hành vi bị nghiêm cấm 1. Trồng cây có chứa</text>
+  <text x="1105" y="542" font-family="Arial, sans-serif" font-size="13" fill="#334038">chất ma túy, hướng dẫn trồng cây có chứa chất ma túy. 2.</text>
+  <text x="1105" y="563" font-family="Arial, sans-serif" font-size="13" fill="#334038">Nghiên cứu, giám định, kiểm nghiệm, kiểm định, sản xuất,</text>
+  <text x="1105" y="584" font-family="Arial, sans-serif" font-size="13" fill="#334038">tàng trữ, vận chuyển, bảo quản, tồn trữ, mua bán...</text>
+</svg>

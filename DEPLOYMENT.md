@@ -214,8 +214,7 @@ Railway provides `REDIS_URL` from the Redis service. `GEMINI_MODEL` is configura
 
 ## Screenshots
 
-Pending after deployment:
+Included after deployment:
 
-- `screenshots/dashboard.png`
-- `screenshots/running.png`
-- `screenshots/test.png`
+- `screenshots/test.png`: Railway frontend demo with Gemini response and legal source citation.
+- `screenshots/test.svg`: source file used to render the PNG artifact.

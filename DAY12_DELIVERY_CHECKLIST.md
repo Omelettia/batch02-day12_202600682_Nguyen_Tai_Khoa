@@ -88,7 +88,7 @@ Requirements:
 - [x] Public URL `/ready` tested after Railway Redis is connected.
 - [x] Public frontend `/demo/ask` tested successfully with Gemini model response and source citation.
 - [x] Public protected `/ask` authentication gate tested: returns HTTP 401 without `X-API-Key`.
-- [ ] Screenshots added to repository after successful Railway deploy.
+- [x] Screenshot added to repository after successful Railway deploy: `screenshots/test.png`.
 
 Public deployment:
 
@@ -113,7 +113,7 @@ POST /ask without X-API-Key -> HTTP 401
 - [x] Public `/ready` is working after Redis variable fix.
 - [x] Public frontend demo is working with Gemini and cited source.
 - [x] Protected `/ask` endpoint rejects missing API key on Railway.
-- [ ] Screenshots included in `screenshots/` folder.
+- [x] Screenshot included in `screenshots/` folder.
 - [x] Repository has clear commit history.
 
 ## Self-Test
