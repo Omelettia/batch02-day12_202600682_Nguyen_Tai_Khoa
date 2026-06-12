@@ -1,6 +1,6 @@
 # Lab 12 — Production Legal RAG Agent
 
-Final project được xây từ project Day 9 `Omelettia/Batch02-Day9_2A202600682_Nguyen_Tai_Khoa`: legal/RAG assistant về pháp luật phòng, chống ma túy và tin tức liên quan. Day 12 bổ sung lớp production: Docker, Redis state, auth, rate limiting, cost guard, health checks và cloud deployment.
+Final project được xây từ project Day 9 `Omelettia/Batch02-Day9_2A202600682_Nguyen_Tai_Khoa`: legal/RAG assistant về pháp luật phòng, chống ma túy và tin tức liên quan. Day 12 bổ sung lớp production: Docker, Redis state, auth, rate limiting, cost guard, health checks, Gemini generation và cloud deployment.
 
 Public Railway URL:
 
@@ -35,7 +35,7 @@ https://batch02-day12202600682nguyentaikhoa-production.up.railway.app
 │   ├── auth.py         # API Key auth
 │   ├── rate_limiter.py # Redis rate limiting
 │   ├── cost_guard.py   # Redis budget protection
-│   └── legal_rag.py    # Day 9 legal RAG core
+│   └── legal_rag.py    # Day 9 legal RAG core + Gemini generation
 ├── data/
 │   └── standardized/   # Day 9 legal/news markdown corpus
 ├── Dockerfile          # Multi-stage, production-ready
@@ -90,6 +90,8 @@ railway login
 railway init
 railway variables set AGENT_API_KEY=your-secret-key
 railway variables set JWT_SECRET=your-jwt-secret
+railway variables set GEMINI_API_KEY=your-gemini-key
+railway variables set GEMINI_MODEL=gemini-3.5-flash
 railway variables set REDIS_URL=redis://...
 railway up
 
@@ -103,7 +105,8 @@ Railway dashboard path:
 2. Set service root directory to `06-lab-complete`.
 3. Add Redis from `+ New`.
 4. Set web service `REDIS_URL` to the Redis service variable.
-5. Generate a Railway domain and test `/health`.
+5. Set `GEMINI_API_KEY` and optional `GEMINI_MODEL`.
+6. Generate a Railway domain and test `/health`.
 
 ---
 
@@ -112,7 +115,7 @@ Railway dashboard path:
 1. Push repo lên GitHub
 2. Render Dashboard → New → Blueprint
 3. Connect repo → Render đọc `render.yaml`
-4. Set secrets: `OPENAI_API_KEY`, `AGENT_API_KEY`
+4. Set secrets: `GEMINI_API_KEY`, `GEMINI_MODEL`, `AGENT_API_KEY`
 5. Deploy → Nhận URL!
 
 ---

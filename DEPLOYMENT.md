@@ -96,7 +96,7 @@ curl -X POST https://batch02-day12202600682nguyentaikhoa-production.up.railway.a
   -d '{"user_id": "test", "question": "Luật Phòng, chống ma túy quy định gì?"}'
 ```
 
-Expected: HTTP 200 with a mock agent answer.
+Expected: HTTP 200 with a cited legal RAG answer. If `GEMINI_API_KEY` is set, the `model` field shows the configured Gemini model; otherwise it uses the local extractive fallback.
 
 Local result: HTTP 200 with a cited legal RAG answer.
 
@@ -126,6 +126,16 @@ curl -X POST https://batch02-day12202600682nguyentaikhoa-production.up.railway.a
 ```
 
 Expected: answer cites `73_2021_QH14_445185.md`.
+
+### Public Frontend API Test
+
+```bash
+curl -X POST https://batch02-day12202600682nguyentaikhoa-production.up.railway.app/demo/ask \
+  -H "Content-Type: application/json" \
+  -d '{"user_id": "demo", "question": "Luật Phòng, chống ma túy quy định những hành vi nào bị nghiêm cấm?"}'
+```
+
+Expected: HTTP 200 after Redis is connected. This route is for the browser UI and is still rate limited/cost guarded server-side.
 
 ### Frontend
 
@@ -163,6 +173,9 @@ Local result:
 - `REDIS_URL`
 - `AGENT_API_KEY`
 - `JWT_SECRET`
+- `LLM_PROVIDER=gemini`
+- `GEMINI_API_KEY`
+- `GEMINI_MODEL=gemini-3.5-flash`
 - `LOG_LEVEL`
 - `RATE_LIMIT_PER_MINUTE=10`
 - `MONTHLY_BUDGET_USD=10.0`
@@ -181,12 +194,15 @@ ENVIRONMENT=production
 APP_NAME=Vietnam Drug Law RAG Agent
 AGENT_API_KEY=<generated-secret>
 JWT_SECRET=<generated-secret>
+LLM_PROVIDER=gemini
+GEMINI_API_KEY=<your-gemini-api-key>
+GEMINI_MODEL=gemini-3.5-flash
 RATE_LIMIT_PER_MINUTE=10
 MONTHLY_BUDGET_USD=10.0
 REDIS_URL=${{Redis.REDIS_URL}}
 ```
 
-Railway provides `REDIS_URL` from the Redis service.
+Railway provides `REDIS_URL` from the Redis service. `GEMINI_MODEL` is configurable; use the model name available in your Gemini API account.
 
 ## Screenshots
 

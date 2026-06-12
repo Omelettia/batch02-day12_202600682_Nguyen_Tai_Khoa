@@ -9,6 +9,9 @@ services:
       APP_NAME: ${APP_NAME:-Vietnam Drug Law RAG Agent}
       APP_VERSION: ${APP_VERSION:-1.0.0}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      LLM_PROVIDER: ${LLM_PROVIDER:-gemini}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-3.5-flash}
       AGENT_API_KEY: ${AGENT_API_KEY:-local-dev-key}
       JWT_SECRET: ${JWT_SECRET:-local-jwt-secret}
       RATE_LIMIT_PER_MINUTE: ${RATE_LIMIT_PER_MINUTE:-10}

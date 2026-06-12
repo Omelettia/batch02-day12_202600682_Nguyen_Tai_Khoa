@@ -51,6 +51,9 @@ Required files:
 - [x] `app/rate_limiter.py`
 - [x] `app/cost_guard.py`
 - [x] `app/legal_rag.py`
+- [x] `app/static/index.html`
+- [x] `app/static/styles.css`
+- [x] `app/static/app.js`
 - [x] `utils/mock_llm.py`
 - [x] `Dockerfile`
 - [x] `docker-compose.yml`
@@ -72,6 +75,7 @@ Requirements:
 - [x] Graceful shutdown.
 - [x] Stateless design using Redis.
 - [x] No hardcoded secrets.
+- [x] Gemini key and model are configured by environment variables.
 - [x] Uses previous Day 9 project as product base: Vietnamese legal RAG corpus and cited legal answers.
 
 ## 3. Service Domain Link
@@ -183,15 +187,17 @@ ENVIRONMENT=production
 APP_NAME=Vietnam Drug Law RAG Agent
 AGENT_API_KEY=<secret>
 JWT_SECRET=<secret>
+LLM_PROVIDER=gemini
+GEMINI_API_KEY=<secret>
+GEMINI_MODEL=gemini-3.5-flash
 RATE_LIMIT_PER_MINUTE=10
 MONTHLY_BUDGET_USD=10.0
 REDIS_URL=${{Redis.REDIS_URL}}
 ```
 
-- [ ] Railway domain generated.
 - [x] Railway domain generated.
 - [x] `/health` tested on Railway domain.
-- [ ] `/ask` tested on Railway domain with `X-API-Key`.
+- [ ] `/ready`, `/demo/ask`, and `/ask` tested on Railway domain after Redis variable fix.
 
 ## Submission
 

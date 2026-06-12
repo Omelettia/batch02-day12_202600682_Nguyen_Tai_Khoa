@@ -165,6 +165,9 @@ class AskResponse(BaseModel):
     timestamp: str
 
 
+PUBLIC_DEMO_USER_ID = "public-demo"
+
+
 @app.get("/", include_in_schema=False)
 def root():
     return FileResponse("app/static/index.html")
@@ -178,6 +181,7 @@ def api_info():
         "environment": settings.environment,
         "endpoints": {
             "ask": "POST /ask (requires X-API-Key)",
+            "demo_ask": "POST /demo/ask (public frontend route, rate limited)",
             "history": "GET /history/{user_id} (requires X-API-Key)",
             "health": "GET /health",
             "ready": "GET /ready",
@@ -185,27 +189,26 @@ def api_info():
     }
 
 
-@app.post("/ask", response_model=AskResponse, tags=["Agent"])
-async def ask_agent(body: AskRequest, request: Request, _api_key: str = Depends(verify_api_key)):
+def _run_agent(body: AskRequest, request: Request, storage_user_id: str, display_user_id: str) -> AskResponse:
     if not _is_ready or _rate_limiter is None or _cost_guard is None:
         raise HTTPException(status_code=503, detail="Service is not ready")
 
-    rate_info = _rate_limiter.check(body.user_id)
+    rate_info = _rate_limiter.check(storage_user_id)
     input_tokens = estimate_tokens(body.question)
-    _cost_guard.check_budget(body.user_id, input_tokens, 0)
+    _cost_guard.check_budget(storage_user_id, input_tokens, 0)
 
-    save_message(body.user_id, "user", body.question)
-    history = load_history(body.user_id)
+    save_message(storage_user_id, "user", body.question)
+    history = load_history(storage_user_id)
     rag_result = answer_legal_question(body.question, history)
     answer = rag_result["answer"]
     output_tokens = estimate_tokens(answer)
-    _cost_guard.check_budget(body.user_id, input_tokens, output_tokens)
-    _cost_guard.record_usage(body.user_id, input_tokens, output_tokens)
-    history = save_message(body.user_id, "assistant", answer)
+    _cost_guard.check_budget(storage_user_id, input_tokens, output_tokens)
+    _cost_guard.record_usage(storage_user_id, input_tokens, output_tokens)
+    history = save_message(storage_user_id, "assistant", answer)
 
     log_event(
         "agent_call",
-        user_id=body.user_id,
+        user_id=storage_user_id,
         q_len=len(body.question),
         input_tokens=input_tokens,
         output_tokens=output_tokens,
@@ -214,16 +217,26 @@ async def ask_agent(body: AskRequest, request: Request, _api_key: str = Depends(
     )
 
     return AskResponse(
-        user_id=body.user_id,
+        user_id=display_user_id,
         question=body.question,
         answer=answer,
         sources=rag_result["sources"],
         retrieval_source=rag_result["retrieval_source"],
-        model="local-day9-legal-rag",
+        model=rag_result.get("model", "local-day9-legal-rag"),
         history_length=len(history),
         served_by=INSTANCE_ID,
         timestamp=datetime.now(timezone.utc).isoformat(),
     )
+
+
+@app.post("/ask", response_model=AskResponse, tags=["Agent"])
+def ask_agent(body: AskRequest, request: Request, _api_key: str = Depends(verify_api_key)):
+    return _run_agent(body, request, body.user_id, body.user_id)
+
+
+@app.post("/demo/ask", response_model=AskResponse, tags=["Frontend"])
+def demo_ask(body: AskRequest, request: Request):
+    return _run_agent(body, request, PUBLIC_DEMO_USER_ID, body.user_id)
 
 
 @app.get("/history/{user_id}", tags=["Agent"])

@@ -19,8 +19,9 @@ class Settings:
     instance_id: str = field(default_factory=lambda: os.getenv("INSTANCE_ID", ""))
 
     # LLM
-    openai_api_key: str = field(default_factory=lambda: os.getenv("OPENAI_API_KEY", ""))
-    llm_model: str = field(default_factory=lambda: os.getenv("LLM_MODEL", "gpt-4o-mini"))
+    llm_provider: str = field(default_factory=lambda: os.getenv("LLM_PROVIDER", "gemini"))
+    gemini_api_key: str = field(default_factory=lambda: os.getenv("GEMINI_API_KEY", ""))
+    gemini_model: str = field(default_factory=lambda: os.getenv("GEMINI_MODEL", "gemini-3.5-flash"))
 
     # Security
     agent_api_key: str = field(default_factory=lambda: os.getenv("AGENT_API_KEY", "dev-key-change-me"))
@@ -49,8 +50,8 @@ class Settings:
                 raise ValueError("AGENT_API_KEY must be set in production!")
             if self.jwt_secret == "dev-jwt-secret":
                 raise ValueError("JWT_SECRET must be set in production!")
-        if not self.openai_api_key:
-            logger.warning("OPENAI_API_KEY not set — using mock LLM")
+        if self.llm_provider == "gemini" and not self.gemini_api_key:
+            logger.warning("GEMINI_API_KEY not set — using local extractive RAG fallback")
         return self
 
 

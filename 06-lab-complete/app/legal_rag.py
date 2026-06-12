@@ -1,17 +1,26 @@
 """Lightweight legal RAG core adapted from the Day 9 legal RAG project."""
 from __future__ import annotations
 
+import json
+import logging
 import math
 import re
+import urllib.error
+import urllib.parse
+import urllib.request
 from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
 
+from app.config import settings
 
 DATA_DIR = Path(__file__).resolve().parents[1] / "data" / "standardized"
 CHUNK_SIZE = 900
 CHUNK_OVERLAP = 140
 TOP_K = 4
+GEMINI_TIMEOUT_SECONDS = 25
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -250,11 +259,97 @@ def conversation_context(history: list[dict], limit: int = 4) -> str:
     return "\n".join(lines)
 
 
+def _model_name() -> str:
+    if settings.llm_provider == "gemini" and settings.gemini_api_key:
+        return settings.gemini_model
+    return "local-day9-legal-rag"
+
+
+def _gemini_model_path() -> str:
+    model = settings.gemini_model.strip()
+    if model.startswith("models/"):
+        model = model.removeprefix("models/")
+    return urllib.parse.quote(model, safe="")
+
+
+def _source_evidence(sources: list[dict]) -> str:
+    evidence = []
+    for index, source in enumerate(sources[:TOP_K], 1):
+        metadata = source.get("metadata", {})
+        citation = _citation(source, index)
+        content = " ".join(str(source.get("content", "")).split())
+        evidence.append(
+            f"{index}. Source: {metadata.get('path') or metadata.get('source') or 'local corpus'}\n"
+            f"Citation: [{citation}]\n"
+            f"Evidence: {content[:1200]}"
+        )
+    return "\n\n".join(evidence)
+
+
+def _generate_with_gemini(query: str, history: list[dict], sources: list[dict], fallback: str) -> str | None:
+    if settings.llm_provider != "gemini" or not settings.gemini_api_key or not sources:
+        return None
+
+    system_instruction = (
+        "You are a Vietnamese legal RAG assistant for a student deployment lab. "
+        "Answer in Vietnamese. Use only the provided evidence. Include concise citations "
+        "using the supplied filenames and years. Say when the evidence is insufficient. "
+        "Add a short note that the answer is reference information, not official legal advice."
+    )
+    prompt = (
+        f"Question:\n{query}\n\n"
+        f"Recent conversation:\n{conversation_context(history) or 'No prior conversation.'}\n\n"
+        f"Evidence:\n{_source_evidence(sources)}\n\n"
+        f"Draft answer to improve while preserving citations:\n{fallback}"
+    )
+    payload = {
+        "system_instruction": {"parts": [{"text": system_instruction}]},
+        "contents": [{"role": "user", "parts": [{"text": prompt}]}],
+        "generationConfig": {
+            "temperature": 0.2,
+            "maxOutputTokens": 900,
+        },
+    }
+    url = (
+        "https://generativelanguage.googleapis.com/v1beta/models/"
+        f"{_gemini_model_path()}:generateContent"
+    )
+    request = urllib.request.Request(
+        url,
+        data=json.dumps(payload).encode("utf-8"),
+        headers={
+            "Content-Type": "application/json",
+            "x-goog-api-key": settings.gemini_api_key,
+        },
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=GEMINI_TIMEOUT_SECONDS) as response:
+            data = json.loads(response.read().decode("utf-8"))
+    except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as exc:
+        logger.warning("Gemini generation failed; using local fallback: %s", exc)
+        return None
+
+    parts = (
+        data.get("candidates", [{}])[0]
+        .get("content", {})
+        .get("parts", [])
+    )
+    text = "\n".join(part.get("text", "") for part in parts if part.get("text"))
+    return text.strip() or None
+
+
 def answer_legal_question(query: str, history: list[dict] | None = None) -> dict:
+    history = history or []
     query_lower = query.lower()
     if "nghiêm cấm" in query_lower or "hành vi bị cấm" in query_lower:
         direct = _article_5_prohibited_acts()
         if direct is not None:
+            gemini_answer = _generate_with_gemini(query, history, direct["sources"], direct["answer"])
+            if gemini_answer:
+                direct["answer"] = gemini_answer
+                direct["retrieval_source"] = "gemini_with_local_day9_legal_corpus_article"
+            direct["model"] = _model_name()
             return direct
 
     chunks = retrieve(query, top_k=TOP_K)
@@ -266,6 +361,7 @@ def answer_legal_question(query: str, history: list[dict] | None = None) -> dict
             ),
             "sources": [],
             "retrieval_source": "none",
+            "model": _model_name(),
         }
 
     context_note = ""
@@ -283,8 +379,14 @@ def answer_legal_question(query: str, history: list[dict] | None = None) -> dict
         "Nội dung này không thay thế tư vấn pháp lý chính thức.\n\n"
         + "\n\n".join(evidence)
     )
+    gemini_answer = _generate_with_gemini(query, history, chunks, answer)
     return {
-        "answer": answer,
+        "answer": gemini_answer or answer,
         "sources": chunks,
-        "retrieval_source": "local_day9_legal_corpus",
+        "retrieval_source": (
+            "gemini_with_local_day9_legal_corpus"
+            if gemini_answer
+            else "local_day9_legal_corpus"
+        ),
+        "model": _model_name(),
     }

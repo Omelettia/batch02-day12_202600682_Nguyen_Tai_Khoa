@@ -328,8 +328,9 @@ The completed production agent is in `06-lab-complete` and includes:
 - `app/auth.py`: API key authentication.
 - `app/rate_limiter.py`: Redis sliding-window rate limiting.
 - `app/cost_guard.py`: Redis monthly budget guard.
-- `app/legal_rag.py`: lightweight RAG core adapted from the Day 9 legal RAG project.
-- `utils/mock_llm.py`: offline mock LLM.
+- `app/legal_rag.py`: lightweight RAG core adapted from Day 9, with optional Gemini generation from retrieved sources.
+- `app/static/`: browser frontend for the public Railway URL.
+- `utils/mock_llm.py`: retained offline mock utility from the lab template.
 - `data/standardized/legal`: copied Day 9 legal markdown corpus.
 - `data/standardized/news`: copied Day 9 news markdown corpus.
 - `Dockerfile`: multi-stage build with non-root runtime user.

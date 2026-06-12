@@ -1,4 +1,3 @@
-const apiKeyInput = document.querySelector("#apiKey");
 const userIdInput = document.querySelector("#userId");
 const questionInput = document.querySelector("#question");
 const askButton = document.querySelector("#askButton");
@@ -9,8 +8,6 @@ const answerText = document.querySelector("#answerText");
 const responseMeta = document.querySelector("#responseMeta");
 const sourcesEl = document.querySelector("#sources");
 const sourceCount = document.querySelector("#sourceCount");
-
-apiKeyInput.value = localStorage.getItem("agentApiKey") || "";
 
 function setStatus(kind, text) {
   healthDot.className = `dot ${kind}`;
@@ -60,21 +57,18 @@ async function checkService() {
 }
 
 async function ask() {
-  const apiKey = apiKeyInput.value.trim();
   const userId = userIdInput.value.trim();
   const question = questionInput.value.trim();
 
-  localStorage.setItem("agentApiKey", apiKey);
   askButton.disabled = true;
   askButton.textContent = "Asking";
   responseMeta.textContent = "Waiting for response";
 
   try {
-    const response = await fetch("/ask", {
+    const response = await fetch("/demo/ask", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-API-Key": apiKey,
       },
       body: JSON.stringify({ user_id: userId, question }),
     });

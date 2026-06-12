@@ -15,8 +15,12 @@ services:
         value: Vietnam Drug Law RAG Agent
       - key: LOG_LEVEL
         value: INFO
-      - key: OPENAI_API_KEY
+      - key: LLM_PROVIDER
+        value: gemini
+      - key: GEMINI_API_KEY
         sync: false
+      - key: GEMINI_MODEL
+        value: gemini-3.5-flash
       - key: AGENT_API_KEY
         generateValue: true
       - key: JWT_SECRET
