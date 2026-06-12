@@ -17,6 +17,8 @@ import redis
 import uvicorn
 from fastapi import Depends, FastAPI, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from app.auth import verify_api_key
@@ -119,6 +121,8 @@ app.add_middleware(
     allow_headers=["Authorization", "Content-Type", "X-API-Key"],
 )
 
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
+
 
 @app.middleware("http")
 async def request_middleware(request: Request, call_next):
@@ -161,8 +165,13 @@ class AskResponse(BaseModel):
     timestamp: str
 
 
-@app.get("/", tags=["Info"])
+@app.get("/", include_in_schema=False)
 def root():
+    return FileResponse("app/static/index.html")
+
+
+@app.get("/api", tags=["Info"])
+def api_info():
     return {
         "app": settings.app_name,
         "version": settings.app_version,

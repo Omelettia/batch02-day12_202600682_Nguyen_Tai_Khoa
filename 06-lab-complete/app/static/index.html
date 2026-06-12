@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Vietnam Drug Law RAG Agent</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="workspace">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Day 12 production service</p>
+            <h1>Vietnam Drug Law RAG Agent</h1>
+          </div>
+          <div class="status-strip" aria-live="polite">
+            <span id="healthDot" class="dot pending"></span>
+            <span id="healthText">Checking service</span>
+          </div>
+        </header>
+
+        <section class="query-panel">
+          <div class="field-grid">
+            <label>
+              <span>API key</span>
+              <input id="apiKey" type="password" autocomplete="off" placeholder="X-API-Key" />
+            </label>
+            <label>
+              <span>User ID</span>
+              <input id="userId" type="text" value="demo" />
+            </label>
+          </div>
+
+          <label class="question-field">
+            <span>Question</span>
+            <textarea id="question" rows="5">Luật Phòng, chống ma túy quy định những hành vi nào bị nghiêm cấm?</textarea>
+          </label>
+
+          <div class="actions">
+            <button id="askButton" type="button">Ask</button>
+            <button id="clearButton" type="button" class="secondary">Clear</button>
+          </div>
+        </section>
+
+        <section class="answer-layout">
+          <article class="answer-panel">
+            <div class="panel-heading">
+              <h2>Answer</h2>
+              <span id="responseMeta">No response yet</span>
+            </div>
+            <pre id="answerText">Submit a question to inspect the legal corpus.</pre>
+          </article>
+
+          <aside class="source-panel">
+            <div class="panel-heading">
+              <h2>Sources</h2>
+              <span id="sourceCount">0</span>
+            </div>
+            <div id="sources" class="source-list"></div>
+          </aside>
+        </section>
+      </section>
+    </main>
+    <script src="/static/app.js"></script>
+  </body>
+</html>

@@ -79,14 +79,15 @@ Requirements:
 - [x] `DEPLOYMENT.md` exists.
 - [x] Railway deployment instructions documented.
 - [x] Local test commands documented.
-- [ ] Public Railway URL added after successful deploy.
-- [ ] Public URL tested from outside local machine.
+- [x] Public Railway URL added after successful deploy.
+- [x] Public URL `/health` tested from outside local machine.
+- [ ] Public URL `/ready` and `/ask` tested after Railway Redis is connected.
 - [ ] Screenshots added after successful Railway deploy.
 
 Pending after Railway redeploy:
 
 ```text
-DEPLOYMENT.md -> Public URL
+Public URL: https://batch02-day12202600682nguyentaikhoa-production.up.railway.app
 screenshots/dashboard.png
 screenshots/running.png
 screenshots/test.png
@@ -96,12 +97,13 @@ screenshots/test.png
 
 - [ ] Repository is public, or instructor has access.
 - [x] `MISSION_ANSWERS.md` completed with all exercises.
-- [ ] `DEPLOYMENT.md` has working public URL.
+- [x] `DEPLOYMENT.md` has public Railway URL.
 - [x] Final source code is in `06-lab-complete/app/`.
 - [x] `06-lab-complete/README.md` has setup instructions.
 - [x] No `.env` file committed, only `.env.example`.
 - [x] No hardcoded secrets in code.
-- [ ] Public URL is accessible and working.
+- [x] Public URL `/health` is accessible and working.
+- [ ] Public `/ready` and `/ask` are working after Redis variable fix.
 - [ ] Screenshots included in `screenshots/` folder.
 - [x] Repository has clear commit history.
 
@@ -187,7 +189,8 @@ REDIS_URL=${{Redis.REDIS_URL}}
 ```
 
 - [ ] Railway domain generated.
-- [ ] `/health` tested on Railway domain.
+- [x] Railway domain generated.
+- [x] `/health` tested on Railway domain.
 - [ ] `/ask` tested on Railway domain with `X-API-Key`.
 
 ## Submission

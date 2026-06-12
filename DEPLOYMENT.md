@@ -2,11 +2,13 @@
 
 ## Public URL
 
-Pending deployment.
+https://batch02-day12202600682nguyentaikhoa-production.up.railway.app
 
 ## Platform
 
 Planned: Railway.
+
+Railway health check verified on 2026-06-12. Readiness currently returns `503 Not ready`, which indicates the Railway web service still needs a working `REDIS_URL` reference to the Railway Redis service.
 
 Local Docker validation completed with `docker compose up --build --scale agent=3 -d`.
 
@@ -18,12 +20,16 @@ http://localhost:8080
 
 ## Test Commands
 
-Replace `https://your-agent.example.com` with the final public URL.
+Public URL:
+
+```text
+https://batch02-day12202600682nguyentaikhoa-production.up.railway.app
+```
 
 ### Health Check
 
 ```bash
-curl https://your-agent.example.com/health
+curl https://batch02-day12202600682nguyentaikhoa-production.up.railway.app/health
 ```
 
 Expected: HTTP 200 with `"status": "ok"`.
@@ -35,13 +41,27 @@ HTTP/1.1 200 OK
 {"status":"ok", ...}
 ```
 
+Railway result:
+
+```text
+HTTP/2 200
+{"status":"ok","version":"1.0.0","environment":"production", ...}
+```
+
 ### Readiness Check
 
 ```bash
-curl https://your-agent.example.com/ready
+curl https://batch02-day12202600682nguyentaikhoa-production.up.railway.app/ready
 ```
 
 Expected: HTTP 200 with `"ready": true` after Redis is connected.
+
+Current Railway result before Redis fix:
+
+```text
+HTTP/2 503
+{"detail":"Not ready"}
+```
 
 Local result:
 
@@ -53,7 +73,7 @@ HTTP/1.1 200 OK
 ### API Test Without Authentication
 
 ```bash
-curl -X POST https://your-agent.example.com/ask \
+curl -X POST https://batch02-day12202600682nguyentaikhoa-production.up.railway.app/ask \
   -H "Content-Type: application/json" \
   -d '{"user_id": "test", "question": "Luật Phòng, chống ma túy quy định gì?"}'
 ```
@@ -70,7 +90,7 @@ HTTP/1.1 401 Unauthorized
 ### API Test With Authentication
 
 ```bash
-curl -X POST https://your-agent.example.com/ask \
+curl -X POST https://batch02-day12202600682nguyentaikhoa-production.up.railway.app/ask \
   -H "X-API-Key: YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{"user_id": "test", "question": "Luật Phòng, chống ma túy quy định gì?"}'
@@ -83,12 +103,12 @@ Local result: HTTP 200 with a cited legal RAG answer.
 ### Legal RAG Citation Test
 
 ```bash
-curl -X POST https://your-agent.example.com/ask \
+curl -X POST https://batch02-day12202600682nguyentaikhoa-production.up.railway.app/ask \
   -H "X-API-Key: YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{"user_id": "legal-test", "question": "Những hành vi nào bị nghiêm cấm theo Luật Phòng, chống ma túy?"}'
 
-curl -X POST https://your-agent.example.com/ask \
+curl -X POST https://batch02-day12202600682nguyentaikhoa-production.up.railway.app/ask \
   -H "X-API-Key: YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{"user_id": "legal-test", "question": "Câu trước có liên quan gì tới cai nghiện ma túy?"}'
@@ -99,7 +119,7 @@ Expected: responses include cited sources from the local Day 9 legal/news corpus
 ### Example Legal Query
 
 ```bash
-curl -X POST https://your-agent.example.com/ask \
+curl -X POST https://batch02-day12202600682nguyentaikhoa-production.up.railway.app/ask \
   -H "X-API-Key: YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{"user_id": "demo", "question": "Luật Phòng, chống ma túy quy định những hành vi nào bị nghiêm cấm?"}'
@@ -107,11 +127,21 @@ curl -X POST https://your-agent.example.com/ask \
 
 Expected: answer cites `73_2021_QH14_445185.md`.
 
+### Frontend
+
+Open:
+
+```text
+https://batch02-day12202600682nguyentaikhoa-production.up.railway.app/
+```
+
+After redeploying the frontend commit, `/` serves the browser UI and `/api` serves machine-readable service metadata.
+
 ### Rate Limit Test
 
 ```bash
 for i in {1..15}; do
-  curl -X POST https://your-agent.example.com/ask \
+  curl -X POST https://batch02-day12202600682nguyentaikhoa-production.up.railway.app/ask \
     -H "X-API-Key: YOUR_KEY" \
     -H "Content-Type: application/json" \
     -d "{\"user_id\":\"rate-test\",\"question\":\"test $i\"}"

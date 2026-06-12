@@ -2,6 +2,12 @@
 
 Final project được xây từ project Day 9 `Omelettia/Batch02-Day9_2A202600682_Nguyen_Tai_Khoa`: legal/RAG assistant về pháp luật phòng, chống ma túy và tin tức liên quan. Day 12 bổ sung lớp production: Docker, Redis state, auth, rate limiting, cost guard, health checks và cloud deployment.
 
+Public Railway URL:
+
+```text
+https://batch02-day12202600682nguyentaikhoa-production.up.railway.app
+```
+
 ## Checklist Deliverable
 
 - [x] Dockerfile (multi-stage, < 500 MB)
@@ -57,10 +63,13 @@ docker compose up --build
 # Hoặc test scale-out
 docker compose up --build --scale agent=3
 
-# 3. Test
+# 3. Test API health
 curl http://localhost:8080/health
 
-# 4. Lấy API key từ .env, test endpoint
+# 4. Open frontend
+# http://localhost:8080/
+
+# 5. Lấy API key từ .env, test endpoint
 API_KEY=$(grep AGENT_API_KEY .env | cut -d= -f2)
 curl -H "X-API-Key: $API_KEY" \
      -X POST http://localhost:8080/ask \
