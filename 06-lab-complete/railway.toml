@@ -7,3 +7,5 @@ healthcheckPath = "/health"
 healthcheckTimeout = 30
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 3
+
+# Add a Railway Redis service and set REDIS_URL from its connection string.

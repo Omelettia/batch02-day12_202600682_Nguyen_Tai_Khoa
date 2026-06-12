@@ -1,0 +1,167 @@
+# Deployment Information
+
+## Public URL
+
+Pending deployment.
+
+## Platform
+
+Planned: Railway.
+
+Local Docker validation completed with `docker compose up --build --scale agent=3 -d`.
+
+Local URL:
+
+```text
+http://localhost:8080
+```
+
+## Test Commands
+
+Replace `https://your-agent.example.com` with the final public URL.
+
+### Health Check
+
+```bash
+curl https://your-agent.example.com/health
+```
+
+Expected: HTTP 200 with `"status": "ok"`.
+
+Local result:
+
+```text
+HTTP/1.1 200 OK
+{"status":"ok", ...}
+```
+
+### Readiness Check
+
+```bash
+curl https://your-agent.example.com/ready
+```
+
+Expected: HTTP 200 with `"ready": true` after Redis is connected.
+
+Local result:
+
+```text
+HTTP/1.1 200 OK
+{"ready":true,"storage":"redis", ...}
+```
+
+### API Test Without Authentication
+
+```bash
+curl -X POST https://your-agent.example.com/ask \
+  -H "Content-Type: application/json" \
+  -d '{"user_id": "test", "question": "Luật Phòng, chống ma túy quy định gì?"}'
+```
+
+Expected: HTTP 401.
+
+Local result:
+
+```text
+HTTP/1.1 401 Unauthorized
+{"detail":"Invalid or missing API key. Include header: X-API-Key: <key>"}
+```
+
+### API Test With Authentication
+
+```bash
+curl -X POST https://your-agent.example.com/ask \
+  -H "X-API-Key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"user_id": "test", "question": "Luật Phòng, chống ma túy quy định gì?"}'
+```
+
+Expected: HTTP 200 with a mock agent answer.
+
+Local result: HTTP 200 with a cited legal RAG answer.
+
+### Legal RAG Citation Test
+
+```bash
+curl -X POST https://your-agent.example.com/ask \
+  -H "X-API-Key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"user_id": "legal-test", "question": "Những hành vi nào bị nghiêm cấm theo Luật Phòng, chống ma túy?"}'
+
+curl -X POST https://your-agent.example.com/ask \
+  -H "X-API-Key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"user_id": "legal-test", "question": "Câu trước có liên quan gì tới cai nghiện ma túy?"}'
+```
+
+Expected: responses include cited sources from the local Day 9 legal/news corpus.
+
+### Example Legal Query
+
+```bash
+curl -X POST https://your-agent.example.com/ask \
+  -H "X-API-Key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"user_id": "demo", "question": "Luật Phòng, chống ma túy quy định những hành vi nào bị nghiêm cấm?"}'
+```
+
+Expected: answer cites `73_2021_QH14_445185.md`.
+
+### Rate Limit Test
+
+```bash
+for i in {1..15}; do
+  curl -X POST https://your-agent.example.com/ask \
+    -H "X-API-Key: YOUR_KEY" \
+    -H "Content-Type: application/json" \
+    -d "{\"user_id\":\"rate-test\",\"question\":\"test $i\"}"
+  echo
+done
+```
+
+Expected: eventually returns HTTP 429.
+
+Local result:
+
+```text
+200 200 200 200 200 200 200 200 200 200 429 429
+```
+
+## Environment Variables Set
+
+- `PORT`
+- `REDIS_URL`
+- `AGENT_API_KEY`
+- `JWT_SECRET`
+- `LOG_LEVEL`
+- `RATE_LIMIT_PER_MINUTE=10`
+- `MONTHLY_BUDGET_USD=10.0`
+- `ENVIRONMENT=production`
+
+## Railway Setup Notes
+
+1. Create a new Railway project from the GitHub repository.
+2. Set the service root directory to `06-lab-complete`.
+3. Railway should use `railway.toml` and the Dockerfile build.
+4. Add a Redis database service in the same Railway project.
+5. In the web service variables, set:
+
+```text
+ENVIRONMENT=production
+APP_NAME=Vietnam Drug Law RAG Agent
+AGENT_API_KEY=<generated-secret>
+JWT_SECRET=<generated-secret>
+RATE_LIMIT_PER_MINUTE=10
+MONTHLY_BUDGET_USD=10.0
+REDIS_URL=${{Redis.REDIS_URL}}
+```
+
+Railway provides `REDIS_URL` from the Redis service.
+
+## Screenshots
+
+Pending after deployment:
+
+- `screenshots/dashboard.png`
+- `screenshots/running.png`
+- `screenshots/test.png`

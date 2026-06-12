@@ -1,11 +1,11 @@
-# Lab 12 — Complete Production Agent
+# Lab 12 — Production Legal RAG Agent
 
-Kết hợp TẤT CẢ những gì đã học trong 1 project hoàn chỉnh.
+Final project được xây từ project Day 9 `Omelettia/Batch02-Day9_2A202600682_Nguyen_Tai_Khoa`: legal/RAG assistant về pháp luật phòng, chống ma túy và tin tức liên quan. Day 12 bổ sung lớp production: Docker, Redis state, auth, rate limiting, cost guard, health checks và cloud deployment.
 
 ## Checklist Deliverable
 
 - [x] Dockerfile (multi-stage, < 500 MB)
-- [x] docker-compose.yml (agent + redis)
+- [x] docker-compose.yml (agent + redis + nginx)
 - [x] .dockerignore
 - [x] Health check endpoint (`GET /health`)
 - [x] Readiness endpoint (`GET /ready`)
@@ -24,13 +24,18 @@ Kết hợp TẤT CẢ những gì đã học trong 1 project hoàn chỉnh.
 ```
 06-lab-complete/
 ├── app/
-│   ├── main.py         # Entry point — kết hợp tất cả
+│   ├── main.py         # FastAPI entry point
 │   ├── config.py       # 12-factor config
-│   ├── auth.py         # API Key + JWT
-│   ├── rate_limiter.py # Rate limiting
-│   └── cost_guard.py   # Budget protection
+│   ├── auth.py         # API Key auth
+│   ├── rate_limiter.py # Redis rate limiting
+│   ├── cost_guard.py   # Redis budget protection
+│   └── legal_rag.py    # Day 9 legal RAG core
+├── data/
+│   └── standardized/   # Day 9 legal/news markdown corpus
 ├── Dockerfile          # Multi-stage, production-ready
-├── docker-compose.yml  # Full stack
+├── docker-compose.yml  # Full stack: agent + redis + nginx
+├── nginx/
+│   └── nginx.conf      # Load balancer
 ├── railway.toml        # Deploy Railway
 ├── render.yaml         # Deploy Render
 ├── .env.example        # Template
@@ -47,17 +52,20 @@ Kết hợp TẤT CẢ những gì đã học trong 1 project hoàn chỉnh.
 cp .env.example .env
 
 # 2. Chạy với Docker Compose
-docker compose up
+docker compose up --build
+
+# Hoặc test scale-out
+docker compose up --build --scale agent=3
 
 # 3. Test
-curl http://localhost/health
+curl http://localhost:8080/health
 
 # 4. Lấy API key từ .env, test endpoint
 API_KEY=$(grep AGENT_API_KEY .env | cut -d= -f2)
 curl -H "X-API-Key: $API_KEY" \
-     -X POST http://localhost/ask \
+     -X POST http://localhost:8080/ask \
      -H "Content-Type: application/json" \
-     -d '{"question": "What is deployment?"}'
+     -d '{"user_id": "local-test", "question": "Luật Phòng, chống ma túy quy định những hành vi nào bị nghiêm cấm?"}'
 ```
 
 ---
@@ -71,13 +79,22 @@ npm i -g @railway/cli
 # Login và deploy
 railway login
 railway init
-railway variables set OPENAI_API_KEY=sk-...
 railway variables set AGENT_API_KEY=your-secret-key
+railway variables set JWT_SECRET=your-jwt-secret
+railway variables set REDIS_URL=redis://...
 railway up
 
-# Nhận public URL!
+# Nhận public URL
 railway domain
 ```
+
+Railway dashboard path:
+
+1. New Project → Deploy from GitHub repo.
+2. Set service root directory to `06-lab-complete`.
+3. Add Redis from `+ New`.
+4. Set web service `REDIS_URL` to the Redis service variable.
+5. Generate a Railway domain and test `/health`.
 
 ---
 
