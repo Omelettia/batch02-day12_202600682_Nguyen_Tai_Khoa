@@ -6,9 +6,9 @@ https://batch02-day12202600682nguyentaikhoa-production.up.railway.app
 
 ## Platform
 
-Planned: Railway.
+Deployed: Railway.
 
-Railway health check verified on 2026-06-12. Readiness currently returns `503 Not ready`, which indicates the Railway web service still needs a working `REDIS_URL` reference to the Railway Redis service.
+Railway health, readiness, and frontend demo verified on 2026-06-12. Redis is connected through the Railway Redis service, and the frontend demo returns a Gemini model response with a cited Day 9 legal source.
 
 Local Docker validation completed with `docker compose up --build --scale agent=3 -d`.
 
@@ -54,13 +54,13 @@ HTTP/2 200
 curl https://batch02-day12202600682nguyentaikhoa-production.up.railway.app/ready
 ```
 
-Expected: HTTP 200 with `"ready": true` after Redis is connected.
+Expected: HTTP 200 with `"ready": true`.
 
-Current Railway result before Redis fix:
+Railway result:
 
 ```text
-HTTP/2 503
-{"detail":"Not ready"}
+HTTP/2 200
+{"ready":true,"storage":"redis","instance_id":"agent-996d5c26"}
 ```
 
 Local result:
@@ -135,7 +135,15 @@ curl -X POST https://batch02-day12202600682nguyentaikhoa-production.up.railway.a
   -d '{"user_id": "demo", "question": "Luật Phòng, chống ma túy quy định những hành vi nào bị nghiêm cấm?"}'
 ```
 
-Expected: HTTP 200 after Redis is connected. This route is for the browser UI and is still rate limited/cost guarded server-side.
+Expected: HTTP 200. This route is for the browser UI and is still rate limited/cost guarded server-side.
+
+Railway result:
+
+```text
+HTTP/2 200
+model: gemini-3.5-flash
+source: 73_2021_QH14_445185.md
+```
 
 ### Frontend
 
@@ -145,7 +153,7 @@ Open:
 https://batch02-day12202600682nguyentaikhoa-production.up.railway.app/
 ```
 
-After redeploying the frontend commit, `/` serves the browser UI and `/api` serves machine-readable service metadata.
+`/` serves the browser UI and `/api` serves machine-readable service metadata.
 
 ### Rate Limit Test
 

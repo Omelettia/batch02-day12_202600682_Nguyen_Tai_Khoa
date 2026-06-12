@@ -85,16 +85,19 @@ Requirements:
 - [x] Local test commands documented.
 - [x] Public Railway URL added after successful deploy.
 - [x] Public URL `/health` tested from outside local machine.
-- [ ] Public URL `/ready` and `/ask` tested after Railway Redis is connected.
-- [ ] Screenshots added after successful Railway deploy.
+- [x] Public URL `/ready` tested after Railway Redis is connected.
+- [x] Public frontend `/demo/ask` tested successfully with Gemini model response and source citation.
+- [x] Public protected `/ask` authentication gate tested: returns HTTP 401 without `X-API-Key`.
+- [ ] Screenshots added to repository after successful Railway deploy.
 
-Pending after Railway redeploy:
+Public deployment:
 
 ```text
 Public URL: https://batch02-day12202600682nguyentaikhoa-production.up.railway.app
-screenshots/dashboard.png
-screenshots/running.png
-screenshots/test.png
+GET /health -> HTTP 200
+GET /ready -> HTTP 200, {"ready": true, "storage": "redis"}
+POST /demo/ask -> HTTP 200, model gemini-3.5-flash, source 73_2021_QH14_445185.md
+POST /ask without X-API-Key -> HTTP 401
 ```
 
 ## Pre-Submission Checklist
@@ -107,7 +110,9 @@ screenshots/test.png
 - [x] No `.env` file committed, only `.env.example`.
 - [x] No hardcoded secrets in code.
 - [x] Public URL `/health` is accessible and working.
-- [ ] Public `/ready` and `/ask` are working after Redis variable fix.
+- [x] Public `/ready` is working after Redis variable fix.
+- [x] Public frontend demo is working with Gemini and cited source.
+- [x] Protected `/ask` endpoint rejects missing API key on Railway.
 - [ ] Screenshots included in `screenshots/` folder.
 - [x] Repository has clear commit history.
 
@@ -176,11 +181,11 @@ Rate limiting:
 - [x] `railway.toml` uses Dockerfile builder.
 - [x] Railway start command wraps `$PORT` in `/bin/sh -c`.
 - [x] Dockerfile command also supports `${PORT:-8000}`.
-- [ ] Push latest commits to GitHub.
-- [ ] Railway project connected to GitHub repo.
-- [ ] Railway service root set to `06-lab-complete`.
-- [ ] Railway Redis service added.
-- [ ] Web service variables set:
+- [x] Push latest commits to GitHub.
+- [x] Railway project connected to GitHub repo.
+- [x] Railway service root set to `06-lab-complete`.
+- [x] Railway Redis service added.
+- [x] Web service variables set:
 
 ```text
 ENVIRONMENT=production
@@ -197,7 +202,9 @@ REDIS_URL=${{Redis.REDIS_URL}}
 
 - [x] Railway domain generated.
 - [x] `/health` tested on Railway domain.
-- [ ] `/ready`, `/demo/ask`, and `/ask` tested on Railway domain after Redis variable fix.
+- [x] `/ready` tested on Railway domain after Redis variable fix.
+- [x] `/demo/ask` tested on Railway domain with Gemini response.
+- [x] `/ask` auth gate tested on Railway domain without API key.
 
 ## Submission
 
